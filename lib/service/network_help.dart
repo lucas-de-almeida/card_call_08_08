@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:card_agora_vai/login/login_service.dart';
+
 import '../entities/cards.dart';
 import 'package:dio/dio.dart';
 
 class NetworkHelper {
   static String token;
-  static Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     print('entrou funcao');
     var dio =
         Dio(BaseOptions(baseUrl: 'https://api-cards-growdev.herokuapp.com'));
@@ -25,7 +27,7 @@ class NetworkHelper {
     }
   }
 
-  static Future<List<Cards>> buscaLista() async {
+  Future<List<Cards>> buscaLista() async {
     Dio dio = Dio(
       BaseOptions(
           baseUrl: 'https://api-cards-growdev.herokuapp.com',
@@ -40,7 +42,7 @@ class NetworkHelper {
     return retorno;
   }
 
-  static Future deletaCard(int id) async {
+  Future deletaCard(int id) async {
     var dio = Dio(BaseOptions(
         baseUrl: 'https://api-cards-growdev.herokuapp.com',
         headers: {"Authorization": "Token $token"}));
@@ -50,10 +52,9 @@ class NetworkHelper {
     } else {
       print('Card deletado!');
     }
-    await buscaLista();
   }
 
-  static Future<void> salvarCard(Cards post) async {
+  Future<void> salvarCard(Cards post) async {
     var dio = Dio(BaseOptions(
         baseUrl: 'https://api-cards-growdev.herokuapp.com',
         headers: {"Authorization": "Token $token"}));
@@ -61,13 +62,12 @@ class NetworkHelper {
     var resposta = await dio.post('/cards', data: dados);
 
     if (resposta.statusCode >= 200 && resposta.statusCode < 300) {
-      await buscaLista();
     } else {
       print(resposta.statusMessage);
     }
   }
 
-  static Future<void> editarCard(Cards post) async {
+  Future<void> editarCard(Cards post) async {
     var dio = Dio(BaseOptions(
         baseUrl: 'https://api-cards-growdev.herokuapp.com',
         headers: {"Authorization": "Token $token"}));
