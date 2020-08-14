@@ -1,5 +1,5 @@
 import 'package:card_agora_vai/entities/cards.dart';
-import 'package:card_agora_vai/login/login_service.dart';
+import 'package:card_agora_vai/controllers/list_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
@@ -13,7 +13,7 @@ class Cadastro extends StatefulWidget {
 class _CadastroState extends State<Cadastro> {
   Cards card;
   bool isLoading = false;
-  LoginService listaService = LoginService();
+  ListController listaService = ListController();
 
   var _titleController = TextEditingController();
   var _contentController = TextEditingController();

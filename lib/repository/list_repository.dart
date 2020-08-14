@@ -1,40 +1,19 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-
-import '../entities/cards.dart';
+import 'package:card_agora_vai/entities/cards.dart';
+import 'package:card_agora_vai/service/network_help.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
-class NetworkHelper {
-  static String _token;
-
-  tokenGetter() => _token;
-
-  Future login(String email, String password, BuildContext context) async {
-    print('entrou funcao');
-    var dio =
-        Dio(BaseOptions(baseUrl: 'https://api-cards-growdev.herokuapp.com'));
-    var dados = {"email": "$email", "password": "$password"};
-
-    var resposta = await dio.post('/login', data: dados);
-    print(resposta.data['user']['name']);
-
-    if (resposta.statusCode >= 200 && resposta.statusCode < 300) {
-      print(resposta.data);
-      _token = resposta.data['token'];
-      //TODO: Este token tem que ser acessível em todo o projeto.
-      return resposta.data;
-    } else {
-      print(resposta.statusMessage);
-      return null;
-    }
-  }
+class ListRepository {
+  final networkHelper = NetworkHelper();
 
   Future<List<Cards>> buscaLista() async {
     Dio dio = Dio(
       BaseOptions(
           baseUrl: 'https://api-cards-growdev.herokuapp.com',
-          headers: {"Authorization": "Token $_token"}),
+          headers: {"Authorization": "Token ${networkHelper.tokenGetter()};"}),
     );
 
     var resposta = await dio.get('/cards');
@@ -48,7 +27,7 @@ class NetworkHelper {
   Future deletaCard(int id) async {
     var dio = Dio(BaseOptions(
         baseUrl: 'https://api-cards-growdev.herokuapp.com',
-        headers: {"Authorization": "Token $_token"}));
+        headers: {"Authorization": "Token $networkHelper.tokenGetter()"}));
     var resposta = await dio.delete('/cards/$id');
     if (resposta.statusCode >= 300 && resposta.statusCode < 200) {
       print(resposta.statusMessage);
@@ -60,7 +39,7 @@ class NetworkHelper {
   Future<void> salvarCard(Cards post) async {
     var dio = Dio(BaseOptions(
         baseUrl: 'https://api-cards-growdev.herokuapp.com',
-        headers: {"Authorization": "Token $_token"}));
+        headers: {"Authorization": "Token $networkHelper.tokenGetter()"}));
     var dados = jsonEncode(post.toJson());
     var resposta = await dio.post('/cards', data: dados);
 
@@ -73,7 +52,7 @@ class NetworkHelper {
   Future<void> editarCard(Cards post) async {
     var dio = Dio(BaseOptions(
         baseUrl: 'https://api-cards-growdev.herokuapp.com',
-        headers: {"Authorization": "Token $_token"}));
+        headers: {"Authorization": "Token $networkHelper.tokenGetter()"}));
     var dados = jsonEncode(post.toJson());
     var resposta = await dio.put('/cards/${post.id}', data: dados);
     Cards retorno;

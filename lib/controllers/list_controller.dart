@@ -1,11 +1,11 @@
 import 'package:card_agora_vai/entities/cards.dart';
 import 'package:card_agora_vai/service/network_help.dart';
 import 'package:mobx/mobx.dart';
-part 'login_service.g.dart';
+part 'list_controller.g.dart';
 
-class LoginService = _LoginServiceBase with _$LoginService;
+class ListController = _ListControllerBase with _$ListController;
 
-abstract class _LoginServiceBase with Store {
+abstract class _ListControllerBase with Store {
   var networkHelper = NetworkHelper();
 
   @observable

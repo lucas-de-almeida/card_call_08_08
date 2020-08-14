@@ -1,7 +1,9 @@
-import 'package:card_agora_vai/login/login_service.dart';
+import 'package:card_agora_vai/controllers/list_controller.dart';
+import 'package:card_agora_vai/entities/user.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 import 'cadastro_edicacao.dart';
 import 'login_page.dart';
@@ -13,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var listaService = LoginService();
+  var listaService = ListController();
   @override
   void initState() {
     listaService.buscaLista();
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -41,14 +44,14 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Text('Buscar Lista'),
               trailing: Icon(Icons.list),
-              onTap: () async => LoginService().buscaLista(),
+              onTap: () async => ListController().buscaLista(),
             ),
             UserAccountsDrawerHeader(
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              accountEmail: Text('email'),
-              accountName: Text('nome'),
+              accountEmail: Text(user.email ?? ''),
+              accountName: Text(user.nome ?? ''),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://www.gravatar.com/avatar/123?d=robohash'),

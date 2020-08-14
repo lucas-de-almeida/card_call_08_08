@@ -8,36 +8,44 @@ class UserRepository {
   String colId = 'id';
   String userTable = 'userTable';
   String colToken = 'token';
+  String colNome = 'nome';
   String colEmail = 'email';
+  String colIsLogged = 'isLogged';
 
   //incluir objeto no banco de dados
-  Future<int> insertUser(User task) async {
+  Future<int> insertUser(User user) async {
     Database db = await _database.instanceRecover();
-    var result = await db.insert(userTable, task.toMap());
+    var result = await db.insert(userTable, user.toMap());
 
     return result;
   }
 
-  Future<List<User>> buscaUsuarios() async {
+  Future<User> buscaUsuario() async {
     Database db = await _database.instanceRecover();
 
     var result = await db.query(userTable);
 
     List<User> list =
         result.isNotEmpty ? result.map((e) => User.fromMap(e)).toList() : [];
-
-    return list;
+    print(list);
+    if (list.isNotEmpty) {
+      return list.last;
+    } else {
+      var user = User();
+      return user;
+    }
   }
 
-  /* //atualiza isLogged
+  //atualiza isLogged
 
   Future<int> isLogged(User user) async {
     var db = await _database.instanceRecover();
-    print(user.done);
+
     var result = await db.rawUpdate(
-        'update $todoTable set done = ${user.done ? 1 : 0} where id = ${user.id};');
+        'update $userTable set $colIsLogged = ${user.isLogged ? 1 : 0} where id = ${user.id};');
+    print('RESULT DA FUNCAO ISLOGGED $result');
     return result;
-  } */
+  }
 
   //Deletar um objeto do banco de dados
 

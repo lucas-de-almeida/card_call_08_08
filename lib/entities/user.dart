@@ -1,9 +1,11 @@
 class User {
   int id;
-  String token = '';
+  String token;
   String email = '';
   String nome = '';
   bool isLogged = false;
+
+  String get userToken => token;
 
   User({this.email, this.nome, this.token});
 
@@ -22,6 +24,11 @@ class User {
     token = json['token'];
     email = json['email'];
     nome = json['nome'];
-    isLogged = json['isLogger'] == 1 ? true : false;
+    isLogged = json['isLogged'] == 1 ? true : false;
+  }
+
+  @override
+  String toString() {
+    return 'NOME: $nome, EMAIL: $email, ISLOGGED: $isLogged, TOKEN: $token';
   }
 }
