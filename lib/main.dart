@@ -33,21 +33,13 @@ class _AppState extends State<App> {
     repository.buscaUsuario().then((value) {
       loggedUser = value;
       controllerState.setIsLogged(loggedUser.isLogged);
-      //print('===>$value');
-      //print('ISLOGGED ===> ${value.isLogged}');
+      /*  print('===>$value');
+      print('ISLOGGED ===> ${value.isLogged}'); */
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (controllerState.isLogged) {
-      final user = Provider.of<User>(context);
-      user.nome = loggedUser.nome;
-      user.email = loggedUser.email;
-      user.token = loggedUser.token;
-      user.isLogged = true;
-    }
-
     return MultiProvider(
       providers: [
         Provider<User>(create: (_) => User()),

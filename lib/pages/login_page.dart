@@ -34,16 +34,18 @@ class _LoginPageState extends State<LoginPage> {
   void login(String email, String senha, User user) async {
     var loggedUser = await network.login(email, senha, context);
     if (loggedUser != null) {
-      // User user = User(email: email, token: NetworkHelper.token);
-
       user.email = loggedUser['user']['email'];
       user.token = loggedUser['token'];
       user.nome = loggedUser['user']['name'];
-      user.isLogged = true;
 
-      print('TOKEN ===> ${user.token}');
-      print('IS LOGGED ANTES DO BANCO ====> ${user.isLogged}');
-      await repository.insertUser(user);
+      if (user.isLogged) {
+        await repository.buscaUsuarioUnico(user).then((value) async {
+          if (!value) {
+            print('INSERINDO USUARIO NO BANCO');
+            await repository.insertUser(user);
+          }
+        });
+      }
 
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -117,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Checkbox(
                       value: user.isLogged ?? false,
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         setState(() {
                           user.isLogged = value;
                           print(user.isLogged);

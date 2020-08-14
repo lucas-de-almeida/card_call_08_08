@@ -50,6 +50,17 @@ mixin _$UserController on _UserControllerBase, Store {
   }
 
   @override
+  dynamic telaCarregando() {
+    final _$actionInfo = _$_UserControllerBaseActionController.startAction(
+        name: '_UserControllerBase.telaCarregando');
+    try {
+      return super.telaCarregando();
+    } finally {
+      _$_UserControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLogged: ${isLogged}

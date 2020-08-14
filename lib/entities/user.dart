@@ -21,6 +21,7 @@ class User {
   }
 
   User.fromMap(Map<String, dynamic> json) {
+    id = json['id'];
     token = json['token'];
     email = json['email'];
     nome = json['nome'];
@@ -29,6 +30,6 @@ class User {
 
   @override
   String toString() {
-    return 'NOME: $nome, EMAIL: $email, ISLOGGED: $isLogged, TOKEN: $token';
+    return 'ID: $id, NOME: $nome, EMAIL: $email, ISLOGGED: $isLogged, TOKEN: $token';
   }
 }

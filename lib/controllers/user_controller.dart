@@ -16,4 +16,10 @@ abstract class _UserControllerBase with Store {
   void setIsLogged(bool value) {
     isLogged = value;
   }
+
+  @action
+  telaCarregando() {
+    Future.delayed(Duration(seconds: 3));
+    return true;
+  }
 }

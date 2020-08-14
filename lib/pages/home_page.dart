@@ -1,5 +1,7 @@
 import 'package:card_agora_vai/controllers/list_controller.dart';
 import 'package:card_agora_vai/entities/user.dart';
+import 'package:card_agora_vai/repository/user_repository.dart';
+import 'package:card_agora_vai/service/db_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -16,15 +18,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var listaService = ListController();
+  final repository = UserRepository(DatabaseHelper());
   @override
   void initState() {
-    listaService.buscaLista();
     super.initState();
+
+    listaService.buscaLista();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final user = Provider.of<User>(context, listen: false);
+    if (user.token == null) {
+      repository.buscaUsuario().then((value) {
+        setState(() {
+          user.nome = value.nome;
+          user.email = value.email;
+          user.token = value.token;
+          user.id = value.id;
+          print('USER ID ===> ${user.id}');
+          listaService.setToken(user.token);
+        });
+        listaService.buscaLista();
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -79,11 +97,15 @@ class _HomePageState extends State<HomePage> {
             //   ),
             // ),
             ListTile(
-              title: Text('Sair'),
-              trailing: Icon(Icons.exit_to_app),
-              onTap: () =>
-                  Navigator.of(context).popAndPushNamed(LoginPage.routename),
-            ),
+                title: Text('Sair'),
+                trailing: Icon(Icons.exit_to_app),
+                onTap: () async {
+                  // print('USER ID HORA EXCLUIR ===> ${user.id}');
+                  //await repository.deleteUsuario(user.id);
+                  user.isLogged = false;
+                  await repository.isLogged(user);
+                  Navigator.of(context).popAndPushNamed(LoginPage.routename);
+                }),
           ],
         ),
       ),

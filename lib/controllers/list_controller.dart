@@ -11,18 +11,38 @@ abstract class _ListControllerBase with Store {
   @observable
   ObservableList<Cards> listaCards = ObservableList.of([]);
 
+  /*  @observable
+  bool _isLoading = false;
+  @action
+  isLoading() => _isLoading;
+
+  @action
+  isLoadingTrue() => _isLoading = true;
+  @action
+  isLoadingFalse() => _isLoading = false; */
+
   @action
   List<Cards> buscaLista() {
     networkHelper.buscaLista().then((value) {
-      print(value);
+      print('ESSE É P VALUE ===> $value');
       listaCards = value.asObservable();
     });
     return listaCards;
   }
 
+  /* @action
+  List<Cards> buscaListaLogged(BuildContext context) {
+    networkHelper.buscaLista().then((value) {
+      print(value);
+      listaCards = value.asObservable();
+    });
+    return listaCards;
+  } */
+
   @action
   Future<void> deletaCard(int id) async {
     await networkHelper.deletaCard(id);
+    await Future.delayed(Duration(seconds: 3));
     networkHelper.buscaLista();
   }
 
@@ -36,5 +56,10 @@ abstract class _ListControllerBase with Store {
   Future<void> salvarCard(Cards card) async {
     await networkHelper.salvarCard(card);
     networkHelper.buscaLista();
+  }
+
+  @action
+  void setToken(String token) {
+    networkHelper.tokkenSetter(token);
   }
 }

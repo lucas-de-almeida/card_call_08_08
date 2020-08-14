@@ -36,6 +36,24 @@ class UserRepository {
     }
   }
 
+  Future<bool> buscaUsuarioUnico(User user) async {
+    Database db = await _database.instanceRecover();
+
+    var result = await db.query(userTable);
+
+    List<User> list =
+        result.isNotEmpty ? result.map((e) => User.fromMap(e)).toList() : [];
+    print(list);
+    if (list.isNotEmpty) {
+      var elemento = list.contains(user.email);
+      print('VALOR RETORNADO ==> $elemento');
+      return elemento;
+    } else {
+      print('NENHUM USUARIO ENCONTRADO');
+      return false;
+    }
+  }
+
   //atualiza isLogged
 
   Future<int> isLogged(User user) async {
@@ -43,7 +61,7 @@ class UserRepository {
 
     var result = await db.rawUpdate(
         'update $userTable set $colIsLogged = ${user.isLogged ? 1 : 0} where id = ${user.id};');
-    print('RESULT DA FUNCAO ISLOGGED $result');
+
     return result;
   }
 

@@ -1,14 +1,22 @@
 import 'dart:convert';
 
+import 'package:card_agora_vai/entities/user.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import '../entities/cards.dart';
 import 'package:dio/dio.dart';
 
 class NetworkHelper {
   static String _token;
+  var context;
+
+  setContext(BuildContext newContext) => context = newContext;
+
+  //final user = Provider.of<User>(interContext);
 
   tokenGetter() => _token;
+  tokkenSetter(String token) => _token = token;
 
   Future login(String email, String password, BuildContext context) async {
     print('entrou funcao');
@@ -31,6 +39,10 @@ class NetworkHelper {
   }
 
   Future<List<Cards>> buscaLista() async {
+    if (_token == null) {
+      return [];
+    }
+
     Dio dio = Dio(
       BaseOptions(
           baseUrl: 'https://api-cards-growdev.herokuapp.com',
@@ -44,6 +56,22 @@ class NetworkHelper {
 
     return retorno;
   }
+
+  /* Future<List<Cards>> buscaListaLogged(BuildContext context) async {
+    final user = Provider.of<User>(context, listen: false);
+    Dio dio = Dio(
+      BaseOptions(
+          baseUrl: 'https://api-cards-growdev.herokuapp.com',
+          headers: {"Authorization": "Token ${_token}"}),
+    );
+
+    var resposta = await dio.get('/cards');
+
+    List<dynamic> listaCards = resposta.data;
+    var retorno = listaCards.map<Cards>((e) => Cards.fromJson(e)).toList();
+
+    return retorno;
+  } */
 
   Future deletaCard(int id) async {
     var dio = Dio(BaseOptions(

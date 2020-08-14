@@ -60,6 +60,17 @@ mixin _$ListController on _ListControllerBase, Store {
   }
 
   @override
+  void setToken(String token) {
+    final _$actionInfo = _$_ListControllerBaseActionController.startAction(
+        name: '_ListControllerBase.setToken');
+    try {
+      return super.setToken(token);
+    } finally {
+      _$_ListControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 listaCards: ${listaCards}
