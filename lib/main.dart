@@ -1,3 +1,4 @@
+import 'package:card_agora_vai/pages/novo_user.dart';
 import 'package:card_agora_vai/repository/list_repository.dart';
 import 'package:card_agora_vai/repository/user_repository.dart';
 import 'package:card_agora_vai/service/db_helper.dart';
@@ -33,8 +34,6 @@ class _AppState extends State<App> {
     repository.buscaUsuario().then((value) {
       loggedUser = value;
       controllerState.setIsLogged(loggedUser.isLogged);
-      /*  print('===>$value');
-      print('ISLOGGED ===> ${value.isLogged}'); */
     });
   }
 
@@ -48,11 +47,16 @@ class _AppState extends State<App> {
       ],
       child: Observer(builder: (_) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark(),
+          themeMode: ThemeMode.dark,
+          darkTheme: ThemeData.dark(),
           home: controllerState.isLogged ? HomePage() : LoginPage(),
           routes: {
             HomePage.routename: (context) => HomePage(),
             LoginPage.routename: (context) => LoginPage(),
             Cadastro.routename: (context) => Cadastro(),
+            NewUser.routeName: (context) => NewUser(),
           },
         );
       }),

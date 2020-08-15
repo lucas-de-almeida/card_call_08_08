@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:card_agora_vai/entities/user.dart';
 import 'package:card_agora_vai/pages/home_page.dart';
+import 'package:card_agora_vai/pages/novo_user.dart';
 import 'package:card_agora_vai/repository/user_repository.dart';
 import 'package:card_agora_vai/service/db_helper.dart';
 import 'package:card_agora_vai/service/network_help.dart';
@@ -13,11 +16,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _password;
   @override
   void initState() {
     super.initState();
     _nomeController.text = 'growdev@growdev.com';
     _senhaController.text = 'growdev@2020';
+    _password = true;
   }
 
   final repository = UserRepository(DatabaseHelper());
@@ -72,62 +77,126 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
       key: _scaffoldKey,
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/dois.jpg'),
+            fit: BoxFit.cover,
+          ),
+          /* gradient: LinearGradient(
+            colors: [Color(0xff293568), Color(0xff1B1A2A)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomRight,
+          ), */
+        ),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Card(
+                  color: Colors.transparent,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'E-Mail',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
-                        controller: _nomeController,
-                      ),
-                      Divider(),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Senha',
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.email,
+                              ),
+                              // labelText: 'Email',
+                              labelStyle: TextStyle(color: Colors.white),
+                            ),
+                            controller: _nomeController,
+                          ),
                         ),
-                        controller: _senhaController,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: RaisedButton(
-                      color: Colors.blue,
-                      onPressed: () => login(
-                          _nomeController.text, _senhaController.text, user),
-                      child: Text(
-                        'Login',
-                      ),
+                        Text(
+                          'Password',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.lock),
+                              // labelText: 'Senha',
+                              labelStyle: TextStyle(color: Colors.white),
+                              suffixIcon: IconButton(
+                                icon: Icon(_password
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _password = !_password;
+                                  });
+                                },
+                              ),
+                            ),
+                            obscureText: _password,
+                            controller: _senhaController,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Checkbox(
-                      value: user.isLogged ?? false,
-                      onChanged: (value) async {
-                        setState(() {
-                          user.isLogged = value;
-                          print(user.isLogged);
-                        });
-                      })
-                ],
-              )
-            ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                              colors: [Colors.purple[900], Colors.teal[800]],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight)),
+                      child: FlatButton(
+                        onPressed: () => login(
+                            _nomeController.text, _senhaController.text, user),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Checkbox(
+                        value: user.isLogged ?? false,
+                        onChanged: (value) async {
+                          setState(() {
+                            user.isLogged = value;
+                            print(user.isLogged);
+                          });
+                        }),
+                    Text('Manter logado'),
+                  ],
+                ),
+                FlatButton(
+                    onPressed: () async {
+                      var newUser = await Navigator.of(context)
+                          .pushNamed(NewUser.routeName);
+                    },
+                    child: Text('Sign'))
+              ],
+            ),
           ),
         ),
       ),
